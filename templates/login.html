@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>ZerOxid Asset Manager</title>
+  <style>body{font-family:Arial;background:#f2f6f8;display:flex;justify-content:center;align-items:center;height:100vh}form{background:#fff;padding:30px;border-radius:6px;box-shadow:0 2px 8px rgba(0,0,0,.15)}input[type=text],input[type=password]{width:100%;padding:8px;margin:6px 0 16px;border:1px solid #ccc;border-radius:4px}button{width:100%;padding:10px;background:#0057b8;color:#fff;border:0;border-radius:4px;cursor:pointer}button:hover{background:#004499}</style>
+</head>
+<body>
+  <form action="/login" method="post">
+    <h3>ZerOxid Asset Manager</h3>
+    <label>Usuario</label>
+    <input type="text" name="username" required>
+    <label>Contraseña</label>
+    <input type="password" name="password" required>
+    <button type="submit">Entrar</button>
+    <% if (req.query.err) { %><p style="color:red">Credenciales inválidas</p><% } %>
+  </form>
+</body>
+</html>
