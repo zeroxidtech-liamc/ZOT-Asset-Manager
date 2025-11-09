@@ -1,4 +1,3 @@
-// server.js  –  versión "grande"
 const express       = require('express');
 const path          = require('path');
 const session       = require('express-session');
@@ -7,11 +6,12 @@ const RateLimit     = require('express-rate-limit');
 
 const app           = express();
 const PORT          = process.env.PORT || 3000;
+const config        = require('./config');
 
 // ----------  MIDDLEWARES  ----------
 if (!fs.existsSync('logs')) fs.mkdirSync('logs');
 app.use(express.urlencoded({ extended: false }));
-app.use(session({ secret: SESS_SECRET, resave: false, saveUninitialized: true }));
+app.use(session({ secret: config.sessionSecret, resave: false, saveUninitialized: true }));
 app.use('/static', express.static(path.join(__dirname, 'templates')));
 
 // Rate-limit login
@@ -21,11 +21,10 @@ app.use('/login', loginLimiter);
 // Logger simple
 app.use((req, res, next) => {
   const line = `[${new Date().toISOString()}] ${req.method} ${req.url} ${req.ip}\n`;
-  fs.appendFileSync(LOG_FILE, line);
+  fs.appendFileSync(config.logFile, line);
   next();
 });
 
-// ----------  ASSETS FAKE-DB  ----------
 let ASSETS = [
   { id: 'PLC-01', type: 'PLC', location: 'Línea 1', status: 'OK' },
   { id: 'HMI-20', type: 'SCADA',     location: 'Control', status: 'OK' },
@@ -37,7 +36,8 @@ app.get('/', (_, res) => res.sendFile(path.join(__dirname, 'templates/login.html
 
 app.post('/login', (req, res) => {
   const { username, password } = req.body;
-  if (username === U && password === P) {
+  // Verificar contra credenciales en config.js
+  if (username === config.credentials.username && password === config.credentials.password) {
     req.session.logged = true;
     return res.redirect('/dashboard');
   }
